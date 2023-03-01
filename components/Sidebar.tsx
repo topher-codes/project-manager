@@ -26,7 +26,7 @@ const Sidebar = () => {
         //</div>
       }
       {links.map((link) => (
-        <SidebarLink link={link} />
+        <SidebarLink link={link} key={link.link} />
       ))}
     </Card>
   );
