@@ -28,7 +28,7 @@ const ProjectCard: FC<{ project: ProjectWithTasks }> = ({ project }) => {
     <Card className="!px-6 !py-8 hover:scale-105 transition-all ease-in-out duration-200">
       <div>
         <span className="text-sm text-gray-300">
-          {formatDate(project.createdAt)}
+          {format(project.createdAt)}
         </span>
       </div>
       <div className="mb-6">
