@@ -7,8 +7,10 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { Suspense } from "react";
 import ProjectCard from "@/components/ProjectCard";
+import TaskCard from "@/components/TaskCard";
 
 const getData = async () => {
+  await delay(1500);
   const user = await getUserFromCookie(cookies());
 
   const projects = await db.project.findMany({
@@ -44,7 +46,9 @@ export default async function Page() {
           <div className="w-1/3 p-3">{/* new project here */}</div>
         </div>
         <div className="flex w-full mt-6 flex-2 grow">
-          <div className="w-full">{/* tasks here */}</div>
+          <div className="w-full">
+            <TaskCard title="Tasks" />
+          </div>
         </div>
       </div>
     </div>
