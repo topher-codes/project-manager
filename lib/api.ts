@@ -43,3 +43,19 @@ export const createNewProject = async (name) => {
     body: { name },
   });
 };
+
+export const createNewTask = async (name, description, projectId) => {
+  return fetcher({
+    url: "/api/task",
+    method: "POST",
+    body: { name, description, projectId },
+  });
+};
+
+export const getTasks = async (projectId) => {
+  return fetcher({
+    url: "/api/getTasks",
+    method: "POST",
+    body: { projectId },
+  });
+};

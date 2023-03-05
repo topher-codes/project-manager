@@ -5,53 +5,43 @@ import { cookies } from "next/headers";
 import Button from "./Button";
 import Card from "./Card";
 import { Task } from "@prisma/client";
-
-const getData = async () => {
-  const user = await getUserFromCookie(cookies());
-  const tasks = await db.task.findMany({
-    where: {
-      ownerId: user.id,
-      NOT: {
-        status: TASK_STATUS.COMPLETED,
-        deleted: false,
-      },
-    },
-    take: 5,
-    orderBy: {
-      due: "asc",
-    },
-  });
-
-  return tasks;
-};
+import NewTask from "./NewTask";
+import { Prisma } from "@prisma/client";
+import { getTasks } from "@/lib/api";
 
 interface TaskCardProps {
   title: string;
   tasks?: Task[];
+  pid?: string;
 }
 
-const TaskCard = async ({ title, tasks }: TaskCardProps) => {
-  const data = tasks || (await getData());
-
+const ProjectTaskCard = async ({ title, tasks, pid }: TaskCardProps) => {
+  const data = tasks;
   return (
     <Card className="">
       <div className="flex items-center justify-between">
         <div>
           <span className="text-3xl text-gray-600">{title}</span>
         </div>
+        <NewTask />
       </div>
       <div>
         {data && data.length ? (
           <div>
             {data.map((task) => (
-              <div className="py-2 ">
-                <div>
-                  <span className="text-gray-800">{task.name}</span>
+              <div className="flex items-center justify-between">
+                <div className="py-2 ">
+                  <div>
+                    <span className="text-gray-800">{task.name}</span>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-400">
+                      {task.description}
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <span className="text-sm text-gray-400">
-                    {task.description}
-                  </span>
+                <div className="flex items-center justify-center">
+                  Progress: {task.status}
                 </div>
               </div>
             ))}
@@ -64,4 +54,4 @@ const TaskCard = async ({ title, tasks }: TaskCardProps) => {
   );
 };
 
-export default TaskCard;
+export default ProjectTaskCard;

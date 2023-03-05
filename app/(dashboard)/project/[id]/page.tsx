@@ -1,28 +1,37 @@
-import TaskCard from "@/components/TaskCard";
+import ProjectTaskCard from "@/components/ProjectTaskCard";
 import { getUserFromCookie } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { cookies } from "next/headers";
+import { Task } from "@prisma/client";
 
-const getData = async (id: string) => {
-  const user = await getUserFromCookie(cookies());
-  const project = await db.project.findFirst({
+export async function generateStaticParams() {
+  const projects = await db.project.findMany({
+    include: {
+      tasks: true,
+    },
+  });
+  return projects.map((project) => ({
+    id: project.id,
+  }));
+}
+
+export default async function ProjectPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const data = await db.project.findUnique({
     where: {
-      id,
-      ownerId: user?.id,
+      id: params.id,
     },
     include: {
       tasks: true,
     },
   });
-
-  return { project };
-};
-
-export default async function ProjectPage({ params }) {
-  const project = await getData(params.id);
+  const { name, tasks } = data;
   return (
     <div className="w-full h-full pr-6 overflow-y-auto">
-      <TaskCard title={project.name} tasks={project.tasks} />
+      <ProjectTaskCard title={name} tasks={tasks} pid={params.id} />
     </div>
   );
 }
